@@ -1,6 +1,5 @@
 package DAO;
 
-import DTO.ContaCorrente;
 import DTO.Usuario;
 
 import java.sql.Connection;

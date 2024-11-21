@@ -3,7 +3,6 @@ package DTO;
 public class Conta {
     private int numeroConta;
     private double saldoConta;
-    Usuario usuario;
 
     public int getNumeroConta() {
         return numeroConta;
@@ -19,14 +18,6 @@ public class Conta {
 
     public void setSaldoConta(double saldoConta) {
         this.saldoConta = saldoConta;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
     }
 
     public void depositar(double valor) {

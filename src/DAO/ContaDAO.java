@@ -1,7 +1,7 @@
 package DAO;
 
 import DTO.ContaCorrente;
-import DTO.ContaPoupança;
+import DTO.ContaPoupanca;
 import DTO.Usuario;
 
 import java.sql.Connection;

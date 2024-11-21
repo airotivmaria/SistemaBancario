@@ -3,7 +3,7 @@ package DTO;
 public class Conta {
     private int numeroConta;
     private double saldoConta;
-    Usuario usuario;
+    private Usuario usuario;
 
     public int getNumeroConta() {
         return numeroConta;

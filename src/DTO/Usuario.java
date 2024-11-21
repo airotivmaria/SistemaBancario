@@ -5,7 +5,7 @@ public class Usuario {
         private int idade;
         private String cpf;
         private String senha;
-        Conta conta;
+        private Conta conta;
 
         public String getSenha() {
             return senha;

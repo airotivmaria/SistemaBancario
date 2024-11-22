@@ -5,23 +5,26 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConexaoDAO {
+
+    //METODO PARA CONECTAR COM O BANCO DE DADOS, RETORNA UMA CONEXÃO COM UM BANCO JÁ EXISTENTE
     public Connection conectaBD (){
         Connection conn = null;
 
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+        try { //TENTAR A CONEXÃO
+            Class.forName("com.mysql.cj.jdbc.Driver"); //DRIVER DE CONEXÃO
 
             String user = "root";
             String password = "123";
-            String url = "jdbc:mysql://localhost:3306/sistemabancario?user=" + user + "&password=" + password;
+            String nomeBanco = "sistemabancario";
+            String url = "jdbc:mysql://localhost:3306/"+ nomeBanco + "?user=" + user + "&password=" + password; //LINK DE CONEXÃO
 
-            conn = DriverManager.getConnection(url);
-    } catch (ClassNotFoundException e) {
-        System.out.println("Driver JDBC não encontrado: " + e.getMessage());
-    }  catch (SQLException erro) {
+            conn = DriverManager.getConnection(url); //ATRIBUI A CONEXÃO (conn) A URL DO BANCO DE DADOS
+
+        } catch (ClassNotFoundException e) {
+            System.out.println("Driver JDBC não encontrado: " + e.getMessage());
+        }  catch (SQLException erro) {
             System.out.println("Erro de conexão: " + erro.getMessage()); //exebi mensagem de erro
         }
-
         return conn;
     }
 }

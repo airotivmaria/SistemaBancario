@@ -53,18 +53,62 @@ public class Main {
 
     public static void cadastrarUsuario(Usuario u, Scanner s, UsuarioDAO usuarioDAO, ContaCorrente cc, ContaPoupanca cp, ContaDAO
             cDAO, Random random){
-        System.out.print("Nome do usuário: ");
-        u.setNome(s.nextLine());
-        System.out.print("Idade: ");
-        u.setIdade(s.nextInt());
-        s.nextLine();
-        System.out.print("CPF: ");
-        u.setCpf(s.nextLine());
-        System.out.print("Saldo inicial da conta: ");
-        cc.setSaldoConta(s.nextDouble());
-        s.nextLine();
-        System.out.print("Digite uma senha: ");
-        u.setSenha(s.nextLine());
+        //VALIDAÇÃO E CADASTRO DO USUÁRIO
+        do {
+            System.out.print("Nome do usuário: ");
+            u.setNome(s.nextLine());
+            if (u.getNome().length() > 0 && u.getNome().length() < 150) {
+                break;
+            } else {
+                System.out.println("O nome deve ser completo.");
+            }
+        } while (true);
+
+        do {
+            System.out.print("Idade: ");
+            u.setIdade(s.nextInt());
+            s.nextLine();
+            if (u.getIdade() >= 18 && u.getIdade() < 100){
+                break;
+            } else if (u.getIdade() < 18){
+                System.out.println("Você não tem idade suficiente.");
+                return;
+            } else {
+                System.out.println("Idade inválida.");
+            }
+        } while (true);
+
+        do {
+            System.out.print("CPF: ");
+            u.setCpf(s.nextLine());
+            if (u.getCpf().length() == 11){
+                break;
+            } else {
+                System.out.println("O CPF teve ter 11 dígitos e não possuir símbolos.");
+            }
+        } while (true);
+
+        do {
+            System.out.print("Saldo inicial da conta: ");
+            cc.setSaldoConta(s.nextDouble());
+            s.nextLine();
+            if (cc.getSaldoConta() >= 0){
+                break;
+            } else {
+                System.out.println("O saldo não pode ser menor que 0.");
+            }
+        } while (true);
+
+        do {
+            System.out.print("Digite uma senha: ");
+            u.setSenha(s.nextLine());
+            if (u.getSenha().length() > 0){
+                break;
+            } else {
+                System.out.println("A senha não pode ser em branco.");
+            }
+        } while (true);
+
         cc.setUsuario(u);
         cp.setUsuario(u);
 
@@ -73,11 +117,13 @@ public class Main {
         cp.setNumeroConta(numeroConta);
         u.setConta(cc);
 
+        //INSERINDO CONTA E USUÁRIO NO BANCO DE DADOS
         cDAO.cadastrarConta(cc);
         usuarioDAO.inserirUsuario(u);
 
         System.out.println("Cadastro realizado com sucesso!");
-        System.out.println("Número da sua conta: " + cc.getNumeroConta());
+        System.out.println("=========================================================");
+        System.out.println("Guarde o número da sua conta para o login: " + cc.getNumeroConta());
     }
 
     public static boolean validarLogin (Usuario u, Scanner s, UsuarioDAO uD, ContaCorrente cc, ContaPoupanca cp){
@@ -89,9 +135,11 @@ public class Main {
             u.setSenha(s.nextLine());
             u.setConta(cc);
 
+            //VALIDA SE O USUÁRIO ESTÁ INSERIDO DENTRO DO BANCO DE DADOS
             ResultSet rsUsuario = uD.verificarUsuario(u);
 
-            if (rsUsuario.next()) {
+
+            if (rsUsuario.next()) { //SE TIVER UM 'next' É PQ ESTÁ INSERIDO
                 System.out.println("Login realizado com sucesso!");
                 return true;
             } else {
@@ -106,12 +154,12 @@ public class Main {
     }
 
     public static void salvarSaldo(ContaDAO cDao, ContaCorrente cc, ContaPoupanca cp){
-        boolean salvo = cDao.salvarSaldo(cc, cp);
+        cDao.salvarSaldo(cc, cp);
     }
-
 
     public static void menuOperacoes (Usuario usuario, ContaCorrente cc, ContaPoupanca cp, Scanner s, ContaDAO cDAO){
         boolean continuar = true;
+        String input;
         while (continuar) {
             System.out.println("""
                         [1] Depositar na conta corrente
@@ -119,6 +167,7 @@ public class Main {
                         [3] Transferir para poupança
                         [4] Consultar saldo
                         [5] Aplicar rendimento
+                        [6] Calcular Rendimento
                         [0] Sair
                         """);
             String opcao = s.nextLine();
@@ -126,28 +175,40 @@ public class Main {
             switch (opcao) {
                 case "1":
                     System.out.print("Valor para depósito: ");
-                    double valorDeposito = s.nextDouble();
-                    s.nextLine();
-                    cc.depositar(valorDeposito);
-                    System.out.println(cc.getSaldoConta());
-                    cDAO.atualizarSaldoCorrente(cc);
-                    salvarSaldo(cDAO, cc, cp);
+                    input = s.nextLine();
+                    if (input.matches("[0-9]+(\\.[0-9]+)?")) {
+                        double valorDeposito = Double.parseDouble(input);
+                        cc.depositar(valorDeposito);
+                        System.out.println(cc.getSaldoConta());
+                        cDAO.atualizarSaldoCorrente(cc);
+                        salvarSaldo(cDAO, cc, cp);
+                    } else {
+                        System.out.println("Você deve digitar apenas números");
+                    }
                     break;
                 case "2":
                     System.out.print("Valor para saque: ");
-                    double valorSaque = s.nextDouble();
-                    s.nextLine();
-                    cc.sacar(valorSaque);
-                    cDAO.atualizarSaldoCorrente(cc);
-                    salvarSaldo(cDAO, cc, cp);
+                    input = s.nextLine();
+                    if (input.matches("[0-9]+(\\.[0-9]+)?")) {
+                        double valorSaque = Double.parseDouble(input);
+                        cc.sacar(valorSaque);
+                        cDAO.atualizarSaldoCorrente(cc);
+                        salvarSaldo(cDAO, cc, cp);
+                    } else {
+                        System.out.println("Você deve digitar apenas números");
+                    }
                     break;
                 case "3":
                     System.out.print("Valor para transferir para poupança: ");
-                    double valorTransferencia = s.nextDouble();
-                    s.nextLine();
-                    cp.transferirDaCorrente(cc, valorTransferencia);
-                    cDAO.atualizarSaldoPoupanca(cp);
-                    salvarSaldo(cDAO, cc, cp);
+                    input = s.nextLine();
+                    if (input.matches("[0-9]+(\\.[0-9]+)?")) {
+                        double valorTransferencia = Double.parseDouble(input);
+                        cp.transferirDaCorrente(cc, valorTransferencia);
+                        cDAO.atualizarSaldoPoupanca(cp);
+                        salvarSaldo(cDAO, cc, cp);
+                    } else {
+                        System.out.println("Você deve digitar apenas números");
+                    }
                     break;
                 case "4":
                     System.out.println("Saldo conta corrente: R$" + cc.getSaldoConta());
@@ -157,6 +218,21 @@ public class Main {
                     cc.aplicarRendimento();
                     cDAO.atualizarSaldoCorrente(cc);
                     salvarSaldo(cDAO, cc, cp);
+                    break;
+                case "6":
+                    System.out.print("Deseja calcular o rendimento para a Conta Corrente [CC] ou Conta Poupaça [CP]: ");
+                    String conta = s.nextLine();
+
+                    if(conta.toUpperCase().equals("CC")){
+                        cc.calcularRendimentoContaCorrente();
+                    } else if (conta.toUpperCase().equals("CP")) {
+                        System.out.print("Quantidade de meses: ");
+                        int meses = s.nextInt();
+                        cp.calcularRendimentoContaPoupanca(meses);
+                    } else {
+                        System.out.println("Opção inválida.");
+                        return;
+                    }
                     break;
                 case "0":
                     continuar = false;

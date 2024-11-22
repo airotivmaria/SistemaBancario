@@ -1,5 +1,6 @@
 package DTO;
 
+//HERDA INFORMAÇÕES DA CLASSE CONTA
 public class ContaPoupanca extends Conta{
 
     public void transferirDaCorrente(ContaCorrente cc, double valor) {
@@ -12,15 +13,14 @@ public class ContaPoupanca extends Conta{
         }
     }
 
-//    public void calcularRendimentoContaPoupanca(int meses) {
-//        if (getSaldoConta() > 0) {
-//            double rendimento = getSaldoConta() * 0.0005 * meses; // 0,05% por mês
-//            getSaldoConta() += rendimento; // Adiciona o rendimento ao saldo
-//            System.out.println("Rendimento de R$ " + rendimento + " aplicado na Conta Poupança por " + meses + " meses.");
-//        } else {
-//            System.out.println("Saldo insuficiente para rendimento na Conta Poupança.");
-//        }
-//    }
+    public void calcularRendimentoContaPoupanca(int meses) {
+        if (getSaldoConta() > 0) {
+            double rendimento = getSaldoConta() * 0.0005 * meses; // 0,05% por mês
+            System.out.println("Rendimento em " + meses + " meses será de R$ " + rendimento);
+        } else {
+            System.out.println("Saldo insuficiente para rendimento na Conta Poupança.");
+        }
+    }
 
 
 }

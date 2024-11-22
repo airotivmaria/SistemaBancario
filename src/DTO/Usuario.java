@@ -7,6 +7,7 @@ public class Usuario {
         private String senha;
         private Conta conta;
 
+        //GETTERS E SETTERS
         public String getSenha() {
             return senha;
         }

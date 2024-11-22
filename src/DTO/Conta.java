@@ -1,10 +1,12 @@
 package DTO;
 
+//CLASSE MÃE
 public class Conta {
     private int numeroConta;
     private double saldoConta;
     private Usuario usuario;
 
+    //GETTERS E SETTERS
     public int getNumeroConta() {
         return numeroConta;
     }
